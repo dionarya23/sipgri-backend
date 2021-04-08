@@ -55,6 +55,10 @@ func main() {
 
 	apiMataPelajaran := router.Group("api/mata-pelajaran")
 	apiMataPelajaran.POST("/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.CreateNewMataPelajaran)
+	apiMataPelajaran.GET("/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.GetAll)
+	apiMataPelajaran.GET("/:id_mata_pelajaran", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.GetOne)
+	apiMataPelajaran.PUT("/:id_mata_pelajaran", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.UpdatedMataPelajaran)
+	apiMataPelajaran.DELETE("/:id_mata_pelajaran", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.DeleteByIDMataPelajaran)
 
 	router.Run()
 }
