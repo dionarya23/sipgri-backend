@@ -8,3 +8,16 @@ type RegisterGuruInput struct {
 	Password     string `json:"password" binding:"required"`
 	Type         string `json:"type" binding:"required"`
 }
+
+type LoginGuruInput struct {
+	Email    string `json:"email" binding:"required, email"`
+	Password string `json:"password" binding:"required"`
+}
+
+type CheckNipInput struct {
+	Nip string `json:"nip" binding:"required"`
+}
+
+type CheckEmailInput struct {
+	Email string `json:"email" binding:"required, email"`
+}
