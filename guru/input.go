@@ -4,13 +4,13 @@ type RegisterGuruInput struct {
 	Nip          string `json:"nip" binding:"required"`
 	Nama         string `json:"nama" binding:"required"`
 	NomorTelepon string `json:"nomor_telepon" binding:"required"`
-	Email        string `json:"email" binding:"required, email"`
+	Email        string `json:"email" binding:"required,email"`
 	Password     string `json:"password" binding:"required"`
 	Type         string `json:"type" binding:"required"`
 }
 
 type LoginGuruInput struct {
-	Email    string `json:"email" binding:"required, email"`
+	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
 }
 
@@ -19,7 +19,7 @@ type CheckNipInput struct {
 }
 
 type CheckEmailInput struct {
-	Email string `json:"email" binding:"required, email"`
+	Email string `json:"email" binding:"required,email"`
 }
 
 type GetGuruInput struct {
@@ -30,6 +30,6 @@ type UpdateGuruInput struct {
 	Nip          string `json:"nip" binding:"required"`
 	Nama         string `json:"nama" binding:"required"`
 	NomorTelepon string `json:"nomor_telepon" binding:"required"`
-	Email        string `json:"email" binding:"required, email"`
+	Email        string `json:"email" binding:"required,email"`
 	Type         string `json:"type" binding:"required"`
 }

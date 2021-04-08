@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/dionarya23/sipgri-backend/auth"
@@ -32,6 +33,7 @@ func (h *guruHandler) RegisterGuru(c *gin.Context) {
 
 	newGuru, err := h.guruService.RegisterGuru(input)
 	if err != nil {
+		fmt.Println("error disini")
 		response := helper.APIResponse("Register Guru failed", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
@@ -55,8 +57,8 @@ func (h *guruHandler) Login(c *gin.Context) {
 
 	guru_, err := h.guruService.Login(input)
 	if err != nil {
-		response := helper.APIResponse("Login failed", http.StatusBadRequest, "error", nil)
-		c.JSON(http.StatusBadRequest, response)
+		response := helper.APIResponse("Login failed", http.StatusNotFound, "error", nil)
+		c.JSON(http.StatusNotFound, response)
 		return
 	}
 
@@ -149,8 +151,8 @@ func (h *guruHandler) DeleteGuru(c *gin.Context) {
 
 	err_ := h.guruService.DeleteGuruByNip(input.Nip)
 	if err_ != nil {
-		response := helper.APIResponse("Failed to delete guru", http.StatusBadRequest, "error", nil)
-		c.JSON(http.StatusBadRequest, response)
+		response := helper.APIResponse("Guru not found", http.StatusNotFound, "error", nil)
+		c.JSON(http.StatusNotFound, response)
 		return
 	}
 

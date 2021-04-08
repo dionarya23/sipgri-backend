@@ -7,7 +7,7 @@ type Repository interface {
 	FindByNip(nip string) (Guru, error)
 	FindByEmail(email string) (Guru, error)
 	FindAll() ([]Guru, error)
-	Update(guru Guru) (Guru, error)
+	Update(guru Guru, nipGuru string) (Guru, error)
 	Delete(nipGuru string) error
 }
 
@@ -59,8 +59,9 @@ func (r *repository) FindAll() ([]Guru, error) {
 	return guru, nil
 }
 
-func (r *repository) Update(guru Guru) (Guru, error) {
-	err := r.db.Save(&guru).Error
+func (r *repository) Update(guru Guru, nipGuru string) (Guru, error) {
+	var guru_ Guru
+	err := r.db.Model(&guru_).Where("nip=?", nipGuru).Updates(guru).Error
 	if err != nil {
 		return guru, err
 	}

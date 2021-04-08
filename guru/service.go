@@ -124,13 +124,17 @@ func (s *service) UpdateGuru(inputNip GetGuruInput, inputData UpdateGuruInput) (
 		return guru, err
 	}
 
+	if guru.Nip == "" {
+		return guru, errors.New("Guru not found")
+	}
+
 	guru.Nip = inputData.Nip
 	guru.Nama = inputData.Nama
 	guru.Email = inputData.Email
 	guru.NomorTelepon = inputData.NomorTelepon
 	guru.Type = inputData.Type
 
-	updatedGuru, err := s.repository.Update(guru)
+	updatedGuru, err := s.repository.Update(guru, inputNip.Nip)
 	if err != nil {
 		return guru, err
 	}
@@ -139,6 +143,15 @@ func (s *service) UpdateGuru(inputNip GetGuruInput, inputData UpdateGuruInput) (
 }
 
 func (s *service) DeleteGuruByNip(nipGuru string) error {
-	err := s.repository.Delete(nipGuru)
-	return err
+	guru, err := s.repository.FindByNip(nipGuru)
+	if err != nil {
+		return err
+	}
+
+	if guru.Nip == "" {
+		return errors.New("Guru not found")
+	}
+
+	err_ := s.repository.Delete(nipGuru)
+	return err_
 }

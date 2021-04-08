@@ -12,6 +12,7 @@ import (
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 func main() {
@@ -19,7 +20,11 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	db, err := gorm.Open(mysql.Open(os.Getenv("DSN")), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(os.Getenv("DATABASE_URL")), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true,
+		},
+	})
 
 	if err != nil {
 		log.Fatal(err.Error())
