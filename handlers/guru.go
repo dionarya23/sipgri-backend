@@ -120,7 +120,7 @@ func (h *guruHandler) UpdateGuru(c *gin.Context) {
 	}
 
 	err_ := c.ShouldBindJSON(&inputData)
-	if err != nil {
+	if err_ != nil {
 		errors := helper.FormatValidationError(err_)
 		errorMessage := gin.H{"errors": errors}
 		response := helper.APIResponse("Update Guru failed", http.StatusUnprocessableEntity, "error", errorMessage)
@@ -157,5 +157,74 @@ func (h *guruHandler) DeleteGuru(c *gin.Context) {
 	}
 
 	response := helper.APIResponse("Success delete guru", http.StatusOK, "success", nil)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *guruHandler) IsEmailExist(c *gin.Context) {
+	var input guru.CheckEmailInput
+
+	err_ := c.ShouldBindJSON(&input)
+	if err_ != nil {
+		errors := helper.FormatValidationError(err_)
+		errorMessage := gin.H{"errors": errors}
+		response := helper.APIResponse("Check Email failed", http.StatusUnprocessableEntity, "error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+	isEmailExist, err := h.guruService.IsEmailAvalaible(input)
+
+	if err != nil {
+		response := helper.APIResponse("Check Email failed", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	data := gin.H{
+		"is_available": isEmailExist,
+	}
+
+	var metaMessage string
+	if isEmailExist {
+		metaMessage = "Email is available"
+	} else {
+		metaMessage = "Email has been registered"
+	}
+
+	response := helper.APIResponse(metaMessage, http.StatusOK, "success", data)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *guruHandler) IsNipExist(c *gin.Context) {
+	var input guru.CheckNipInput
+
+	err_ := c.ShouldBindJSON(&input)
+	if err_ != nil {
+		errors := helper.FormatValidationError(err_)
+		errorMessage := gin.H{"errors": errors}
+		response := helper.APIResponse("Check Nip failed", http.StatusUnprocessableEntity, "error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	isNipExist, err := h.guruService.IsNipAvalaible(input)
+
+	if err != nil {
+		response := helper.APIResponse("Check Nip failed", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	data := gin.H{
+		"is_available": isNipExist,
+	}
+
+	var metaMessage string
+	if isNipExist {
+		metaMessage = "Nip is available"
+	} else {
+		metaMessage = "Nip has been registered"
+	}
+
+	response := helper.APIResponse(metaMessage, http.StatusOK, "success", data)
 	c.JSON(http.StatusOK, response)
 }
