@@ -12,6 +12,7 @@ type Service interface {
 	IsNipAvalaible(input CheckNipInput) (bool, error)
 	IsEmailAvalaible(input CheckEmailInput) (bool, error)
 	GetGuruByNip(nipGuru string) (Guru, error)
+	GetAllGuru() ([]Guru, error)
 }
 
 type service struct {
@@ -99,6 +100,16 @@ func (s *service) GetGuruByNip(nipGuru string) (Guru, error) {
 
 	if guru.Nip == "" {
 		return guru, errors.New("Guru not found")
+	}
+
+	return guru, nil
+}
+
+func (s *service) GetAllGuru() ([]Guru, error) {
+
+	guru, err := s.repository.FindAll()
+	if err != nil {
+		return guru, err
 	}
 
 	return guru, nil

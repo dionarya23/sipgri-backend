@@ -35,9 +35,10 @@ func main() {
 	router := gin.Default()
 
 	apiGuru := router.Group("/api/guru")
-
-	apiGuru.POST("/guru/register", middleware.AuthMiddleware(authService, guruService, "admin"), guruHandler.RegisterGuru)
-	apiGuru.POST("/guru/login", guruHandler.Login)
+	apiGuru.POST("/register", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), guruHandler.RegisterGuru)
+	apiGuru.POST("/login", guruHandler.Login)
+	apiGuru.GET("/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), guruHandler.GetAllGuru)
+	apiGuru.GET("/:nip", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.GetOneGuru)
 
 	router.Run()
 }

@@ -27,15 +27,17 @@ func (h *guruHandler) RegisterGuru(c *gin.Context) {
 		errorMessage := gin.H{"errors": errors}
 		response := helper.APIResponse("Register Guru failed", http.StatusUnprocessableEntity, "error", errorMessage)
 		c.JSON(http.StatusUnprocessableEntity, response)
+		return
 	}
 
 	newGuru, err := h.guruService.RegisterGuru(input)
 	if err != nil {
 		response := helper.APIResponse("Register Guru failed", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
+		return
 	}
 
-	formatter := guru.FormatGuru(newGuru, "")
+	formatter := guru.FormatAuthGuru(newGuru, "")
 	response := helper.APIResponse("Success create guru", http.StatusCreated, "success", formatter)
 	c.JSON(http.StatusCreated, response)
 }
@@ -48,12 +50,14 @@ func (h *guruHandler) Login(c *gin.Context) {
 		errorMessage := gin.H{"errors": errors}
 		response := helper.APIResponse("Login Failed", http.StatusUnprocessableEntity, "error", errorMessage)
 		c.JSON(http.StatusUnprocessableEntity, response)
+		return
 	}
 
 	guru_, err := h.guruService.Login(input)
 	if err != nil {
 		response := helper.APIResponse("Login failed", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
+		return
 	}
 
 	token, err := h.authService.GenerateToken(guru_.Nip)
@@ -63,7 +67,41 @@ func (h *guruHandler) Login(c *gin.Context) {
 		return
 	}
 
-	formatter := guru.FormatGuru(guru_, token)
+	formatter := guru.FormatAuthGuru(guru_, token)
 	response := helper.APIResponse("Login success", http.StatusOK, "success", formatter)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *guruHandler) GetAllGuru(c *gin.Context) {
+	listGuru, err := h.guruService.GetAllGuru()
+
+	if err != nil {
+		response := helper.APIResponse("Error to get list guru", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.APIResponse("List of guru", http.StatusOK, "success", guru.FormatListGuru(listGuru))
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *guruHandler) GetOneGuru(c *gin.Context) {
+	var input guru.GetGuruInput
+
+	err := c.ShouldBindUri(&input)
+	if err != nil {
+		response := helper.APIResponse("Failed to get detail of guru", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	guruDetail, err := h.guruService.GetGuruByNip(input.Nip)
+	if err != nil {
+		response := helper.APIResponse("Failed to get detail of guru", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.APIResponse("Guru detail", http.StatusOK, "success", guru.FormatDetailGuru(guruDetail))
 	c.JSON(http.StatusOK, response)
 }

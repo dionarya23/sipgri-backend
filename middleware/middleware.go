@@ -11,7 +11,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware(authService auth.Service, guruService guru.Service, typePegawai string) gin.HandlerFunc {
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
+func AuthMiddleware(authService auth.Service, guruService guru.Service, typePegawai []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 
@@ -53,7 +62,7 @@ func AuthMiddleware(authService auth.Service, guruService guru.Service, typePega
 			return
 		}
 
-		if guru.Type != typePegawai {
+		if !contains(typePegawai, guru.Type) {
 			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
@@ -61,4 +70,5 @@ func AuthMiddleware(authService auth.Service, guruService guru.Service, typePega
 
 		c.Set("currentUser", guru)
 	}
+
 }

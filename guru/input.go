@@ -21,3 +21,7 @@ type CheckNipInput struct {
 type CheckEmailInput struct {
 	Email string `json:"email" binding:"required, email"`
 }
+
+type GetGuruInput struct {
+	Nip string `uri:"nip" binding:"required"`
+}
