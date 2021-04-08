@@ -13,6 +13,8 @@ type Service interface {
 	IsEmailAvalaible(input CheckEmailInput) (bool, error)
 	GetGuruByNip(nipGuru string) (Guru, error)
 	GetAllGuru() ([]Guru, error)
+	UpdateGuru(inputNip GetGuruInput, inputData UpdateGuruInput) (Guru, error)
+	DeleteGuruByNip(nipGuru string) error
 }
 
 type service struct {
@@ -113,4 +115,30 @@ func (s *service) GetAllGuru() ([]Guru, error) {
 	}
 
 	return guru, nil
+}
+
+func (s *service) UpdateGuru(inputNip GetGuruInput, inputData UpdateGuruInput) (Guru, error) {
+	guru, err := s.repository.FindByNip(inputNip.Nip)
+
+	if err != nil {
+		return guru, err
+	}
+
+	guru.Nip = inputData.Nip
+	guru.Nama = inputData.Nama
+	guru.Email = inputData.Email
+	guru.NomorTelepon = inputData.NomorTelepon
+	guru.Type = inputData.Type
+
+	updatedGuru, err := s.repository.Update(guru)
+	if err != nil {
+		return guru, err
+	}
+
+	return updatedGuru, nil
+}
+
+func (s *service) DeleteGuruByNip(nipGuru string) error {
+	err := s.repository.Delete(nipGuru)
+	return err
 }

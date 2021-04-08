@@ -39,6 +39,8 @@ func main() {
 	apiGuru.POST("/login", guruHandler.Login)
 	apiGuru.GET("/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), guruHandler.GetAllGuru)
 	apiGuru.GET("/:nip", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.GetOneGuru)
+	apiGuru.PUT("/:nip", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.UpdateGuru)
+	apiGuru.DELETE("/:nip", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), guruHandler.DeleteGuru)
 
 	router.Run()
 }

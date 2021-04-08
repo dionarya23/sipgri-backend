@@ -25,3 +25,11 @@ type CheckEmailInput struct {
 type GetGuruInput struct {
 	Nip string `uri:"nip" binding:"required"`
 }
+
+type UpdateGuruInput struct {
+	Nip          string `json:"nip" binding:"required"`
+	Nama         string `json:"nama" binding:"required"`
+	NomorTelepon string `json:"nomor_telepon" binding:"required"`
+	Email        string `json:"email" binding:"required, email"`
+	Type         string `json:"type" binding:"required"`
+}
