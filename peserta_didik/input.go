@@ -20,5 +20,5 @@ type InputDataPesertaDidik struct {
 }
 
 type InputNisn struct {
-	Nisn string `uri:"nisn" binding:"required"`
+	Nisn string `uri:"nisn"`
 }

@@ -42,12 +42,12 @@ func FormatPesertaDidikDetail(persetaDidik PesertaDidik) PesertaDidikFormatter {
 }
 
 func FormatPesertaDidikList(pesertaDidik []PesertaDidik) []PesertaDidikFormatter {
-	peserta_didik := []PesertaDidikFormatter{}
+	peserta_didik_ := []PesertaDidikFormatter{}
 
 	for _, perseta := range pesertaDidik {
 		pesertaDidik_ := FormatPesertaDidikDetail(perseta)
-		peserta_didik = append(peserta_didik, pesertaDidik_)
+		peserta_didik_ = append(peserta_didik_, pesertaDidik_)
 	}
 
-	return peserta_didik
+	return peserta_didik_
 }

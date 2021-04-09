@@ -6,7 +6,8 @@ type Repository interface {
 	Save(pesertaDidik PesertaDidik) (PesertaDidik, error)
 	GetAll() ([]PesertaDidik, error)
 	GetByNisn(Nisn string) (PesertaDidik, error)
-	Update(NewDataPesertaDidik PesertaDidik, Nisn string) (PesertaDidik, error)
+	GetByNis(Nis string) (PesertaDidik, error)
+	Update(Nisn string, NewDataPesertaDidik PesertaDidik) (PesertaDidik, error)
 	Delete(Nisn string) error
 }
 
@@ -49,7 +50,17 @@ func (r *repository) GetByNisn(Nisn string) (PesertaDidik, error) {
 	return pesertaDidik, nil
 }
 
-func (r *repository) Update(NewDataPesertaDidik PesertaDidik, Nisn string) (PesertaDidik, error) {
+func (r *repository) GetByNis(Nis string) (PesertaDidik, error) {
+	var pesertaDidik PesertaDidik
+	err := r.db.Where("nis=?", Nis).Find(&pesertaDidik).Error
+	if err != nil {
+		return pesertaDidik, err
+	}
+
+	return pesertaDidik, nil
+}
+
+func (r *repository) Update(Nisn string, NewDataPesertaDidik PesertaDidik) (PesertaDidik, error) {
 	var pesertaDidik PesertaDidik
 	err := r.db.Model(&pesertaDidik).Where("nisn=?", Nisn).Updates(NewDataPesertaDidik).Error
 	if err != nil {
