@@ -3,7 +3,6 @@ package peserta_didik
 type InputDataPesertaDidik struct {
 	Nisn                string `json:"nisn" binding:"required"`
 	Nis                 string `json:"nis" binding:"required"`
-	IDKelas             int    `json:"id_kelas" binding:"required"`
 	Nama                string `json:"nama" binding:"required"`
 	JenisKelamin        string `json:"jenis_kelamin" binding:"required"`
 	TempatLahir         string `json:"tempat_lahir" binding:"required"`

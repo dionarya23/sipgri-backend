@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/dionarya23/sipgri-backend/auth"
@@ -33,7 +32,6 @@ func (h *guruHandler) RegisterGuru(c *gin.Context) {
 
 	newGuru, err := h.guruService.RegisterGuru(input)
 	if err != nil {
-		fmt.Println("error disini")
 		response := helper.APIResponse("Register Guru failed", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return

@@ -3,7 +3,6 @@ package peserta_didik
 type PesertaDidikFormatter struct {
 	Nisn                string `json:"nisn"`
 	Nis                 string `json:"nis"`
-	IDKelas             int    `json:"id_kelas"`
 	Nama                string `json:"nama"`
 	JenisKelamin        string `json:"jenis_kelamin"`
 	TempatLahir         string `json:"tempat_lahir"`
@@ -24,7 +23,6 @@ func FormatPesertaDidikDetail(persetaDidik PesertaDidik) PesertaDidikFormatter {
 	peserta_didik := PesertaDidikFormatter{}
 	peserta_didik.Nisn = persetaDidik.Nisn
 	peserta_didik.Nis = persetaDidik.Nis
-	peserta_didik.IDKelas = persetaDidik.IDKelas
 	peserta_didik.Nama = persetaDidik.Nama
 	peserta_didik.JenisKelamin = persetaDidik.JenisKelamin
 	peserta_didik.TempatLahir = persetaDidik.TempatLahir

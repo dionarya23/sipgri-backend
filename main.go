@@ -9,6 +9,7 @@ import (
 	"github.com/dionarya23/sipgri-backend/handlers"
 	"github.com/dionarya23/sipgri-backend/mata_pelajaran"
 	"github.com/dionarya23/sipgri-backend/middleware"
+	"github.com/dionarya23/sipgri-backend/peserta_didik"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
@@ -33,13 +34,16 @@ func main() {
 
 	guruRepository := guru.NewRepository(db)
 	mataPelajaranRepository := mata_pelajaran.NewRepository(db)
+	pesertaDidikRepository := peserta_didik.NewRepository(db)
 
 	guruService := guru.NewService(guruRepository)
 	authService := auth.NewService()
 	mataPelajaranService := mata_pelajaran.NewService(mataPelajaranRepository)
+	pesertaDidikService := peserta_didik.NewService(pesertaDidikRepository)
 
 	guruHandler := handlers.NewGuruHandler(guruService, authService)
 	mataPelajaranHandler := handlers.NewMataPelajaranHandler(mataPelajaranService)
+	pesertaDidikHandler := handlers.NewPesertaDidikHandler(pesertaDidikService)
 
 	router := gin.Default()
 
@@ -53,12 +57,15 @@ func main() {
 	apiGuru.POST("/check-nip", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.IsNipExist)
 	apiGuru.POST("/check-email", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.IsEmailExist)
 
-	apiMataPelajaran := router.Group("api/mata-pelajaran")
+	apiMataPelajaran := router.Group("/api/mata-pelajaran")
 	apiMataPelajaran.POST("/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.CreateNewMataPelajaran)
 	apiMataPelajaran.GET("/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.GetAll)
 	apiMataPelajaran.GET("/:id_mata_pelajaran", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.GetOne)
 	apiMataPelajaran.PUT("/:id_mata_pelajaran", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.UpdatedMataPelajaran)
 	apiMataPelajaran.DELETE("/:id_mata_pelajaran", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.DeleteByIDMataPelajaran)
+
+	apiPesertaDidik := router.Group("/api/peserta-didik")
+	apiPesertaDidik.POST("/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), pesertaDidikHandler.CreatePesertaDidik)
 
 	router.Run()
 }

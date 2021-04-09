@@ -36,3 +36,12 @@ func FormatValidationError(err error) []string {
 	}
 	return errors
 }
+
+func Contains(arrayString []string, str string) bool {
+	for _, value := range arrayString {
+		if value == str {
+			return true
+		}
+	}
+	return false
+}
