@@ -6,7 +6,7 @@ type Repository interface {
 	Save(kelas Kelas) (Kelas, error)
 	FindAll() ([]Kelas, error)
 	FindByID(IDKelas int) (Kelas, error)
-	Update(IDKelas int, updatedKelas Kelas) (Kelas, error)
+	Update(updatedKelas Kelas) (Kelas, error)
 	Delete(IDKelas int) error
 }
 
@@ -49,8 +49,8 @@ func (r *repository) FindByID(IDKelas int) (Kelas, error) {
 	return kelas, nil
 }
 
-func (r *repository) Update(IDKelas int, updatedKelas Kelas) (Kelas, error) {
-	err := r.db.Model(&Kelas{}).Select("nama_kelas", "nip_wali").Where("id_kelas=?", IDKelas).Updates(updatedKelas).Error
+func (r *repository) Update(updatedKelas Kelas) (Kelas, error) {
+	err := r.db.Save(&updatedKelas).Error
 
 	if err != nil {
 		return updatedKelas, err

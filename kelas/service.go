@@ -66,7 +66,7 @@ func (s *service) UpdateById(inputID InputIDKelas, inputData InputNewKelas) (Kel
 	kelas.NamaKelas = inputData.NamaKelas
 	kelas.NipWali = inputData.NipWali
 
-	updatedKelas, err := s.repository.Update(inputID.IDKelas, kelas)
+	updatedKelas, err := s.repository.Update(kelas)
 	if err != nil {
 		return updatedKelas, err
 	}
