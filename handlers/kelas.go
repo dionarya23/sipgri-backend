@@ -89,15 +89,24 @@ func (h *kelasHandler) UpdateById(c *gin.Context) {
 		return
 	}
 
+	err_ := c.ShouldBindJSON(&inputData)
+	if err_ != nil {
+		errors := helper.FormatValidationError(err_)
+		errorMessage := gin.H{"errors": errors}
+		response := helper.APIResponse("Update kelas failed", http.StatusUnprocessableEntity, "error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
 	updatedKelas, err := h.kelasService.UpdateById(inputID, inputData)
 	if err != nil {
-		response := helper.APIResponse("Update kelas failed", http.StatusBadRequest, "success", nil)
+		response := helper.APIResponse("Update kelas failed", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	formatter := kelas.FormatKelasDetail(updatedKelas)
-	response := helper.APIResponse("Success update kelas", http.StatusOK, "success", formatter)
+	response := helper.APIResponse("Success update kelas", http.StatusOK, "error", formatter)
 	c.JSON(http.StatusOK, response)
 }
 

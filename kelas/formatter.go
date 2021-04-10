@@ -25,6 +25,8 @@ func FormatKelasDetail(kelas Kelas) KelasFormatter {
 
 	if len(kelas.PesertaDidik) != 0 {
 		formatter.PesertaDidik = peserta_didik.FormatPesertaDidikList(kelas.PesertaDidik)
+	} else {
+		formatter.PesertaDidik = make([]string, 0)
 	}
 
 	return formatter
