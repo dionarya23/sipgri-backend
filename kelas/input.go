@@ -8,3 +8,7 @@ type InputNewKelas struct {
 type InputIDKelas struct {
 	IDKelas int `uri:"id_kelas" binding:"required"`
 }
+
+type InputNipWali struct {
+	NipWali string `uri:"nip_wali" binding:"required"`
+}

@@ -6,6 +6,7 @@ type Service interface {
 	CreateKelas(input InputNewKelas) (Kelas, error)
 	GetAll() ([]Kelas, error)
 	GetById(input InputIDKelas) (Kelas, error)
+	GetByNipWali(input InputNipWali) (Kelas, error)
 	UpdateById(inputID InputIDKelas, inputData InputNewKelas) (Kelas, error)
 	DeleteById(input InputIDKelas) error
 }
@@ -44,6 +45,16 @@ func (s *service) GetAll() ([]Kelas, error) {
 
 func (s *service) GetById(input InputIDKelas) (Kelas, error) {
 	kelas, err := s.repository.FindByID(input.IDKelas)
+
+	if err != nil {
+		return kelas, err
+	}
+
+	return kelas, nil
+}
+
+func (s *service) GetByNipWali(input InputNipWali) (Kelas, error) {
+	kelas, err := s.repository.FindByNipWali(input.NipWali)
 
 	if err != nil {
 		return kelas, err

@@ -6,6 +6,7 @@ type Repository interface {
 	Save(kelas Kelas) (Kelas, error)
 	FindAll() ([]Kelas, error)
 	FindByID(IDKelas int) (Kelas, error)
+	FindByNipWali(NipWali string) (Kelas, error)
 	Update(updatedKelas Kelas) (Kelas, error)
 	Delete(IDKelas int) error
 }
@@ -42,6 +43,17 @@ func (r *repository) FindByID(IDKelas int) (Kelas, error) {
 	var kelas Kelas
 
 	err := r.db.Preload("Guru").Preload("PesertaDidik").First(&kelas, IDKelas).Error
+	if err != nil {
+		return kelas, err
+	}
+
+	return kelas, nil
+}
+
+func (r *repository) FindByNipWali(NipWali string) (Kelas, error) {
+	var kelas Kelas
+
+	err := r.db.Preload("Guru").Preload("PesertaDidik").First(&kelas, "nip_wali=?", NipWali).Error
 	if err != nil {
 		return kelas, err
 	}

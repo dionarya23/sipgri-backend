@@ -73,10 +73,11 @@ func main() {
 	apiHandler.GET("/peserta-didik/one/", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), pesertaDidikHandler.GetOnePesertaDidik)
 	apiHandler.PUT("/peserta-didik/:nisn/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), pesertaDidikHandler.UpdatePesertaDidik)
 	apiHandler.DELETE("/peserta-didik/:nisn/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), pesertaDidikHandler.DeleteByNisn)
+	apiHandler.GET("/peserta-didik/wali-kelas/:nip_wali", middleware.AuthMiddleware(authService, guruService, []string{"admin", "wali_kelas"}), kelasHandler.GetByNipWali)
 
 	apiHandler.POST("/kelas/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.CreateKelas)
 	apiHandler.GET("/kelas/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.GetAll)
-	apiHandler.GET("/kelas/:id_kelas", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.GetById)
+	apiHandler.GET("/kelas/:id_kelas/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.GetById)
 	apiHandler.PUT("/kelas/:id_kelas/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.UpdateById)
 	apiHandler.DELETE("/kelas/:id_kelas", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.DeleteById)
 

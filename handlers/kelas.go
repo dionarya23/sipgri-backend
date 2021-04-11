@@ -71,8 +71,44 @@ func (h *kelasHandler) GetById(c *gin.Context) {
 		return
 	}
 
+	if kelas_.IDKelas == 0 {
+		response := helper.APIResponse("Kelas not found", http.StatusNotFound, "error", nil)
+		c.JSON(http.StatusNotFound, response)
+		return
+	}
+
 	formatter := kelas.FormatKelasDetail(kelas_)
 	response := helper.APIResponse("Success get kelas", http.StatusOK, "success", formatter)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *kelasHandler) GetByNipWali(c *gin.Context) {
+	var input kelas.InputNipWali
+
+	err := c.ShouldBindUri(&input)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		errorMessage := gin.H{"errors": errors}
+		response := helper.APIResponse("Get peserta didik failed", http.StatusUnprocessableEntity, "error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	kelas_, err := h.kelasService.GetByNipWali(input)
+	if err != nil {
+		response := helper.APIResponse("Get peserta didik failed", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if kelas_.IDKelas == 0 {
+		response := helper.APIResponse("Nip Wali not found", http.StatusNotFound, "error", nil)
+		c.JSON(http.StatusNotFound, response)
+		return
+	}
+
+	formatter := kelas.FormatKelasDetail(kelas_)
+	response := helper.APIResponse("Success get peserta didik", http.StatusOK, "success", formatter)
 	c.JSON(http.StatusOK, response)
 }
 
