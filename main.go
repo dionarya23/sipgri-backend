@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/dionarya23/sipgri-backend/auth"
+	"github.com/dionarya23/sipgri-backend/estrakulikuler"
 	"github.com/dionarya23/sipgri-backend/guru"
 	"github.com/dionarya23/sipgri-backend/handlers"
 	"github.com/dionarya23/sipgri-backend/kelas"
@@ -39,6 +40,7 @@ func main() {
 	pesertaDidikRepository := peserta_didik.NewRepository(db)
 	kelasRepository := kelas.NewRepository(db)
 	mengajarRepository := mengajar.NewRepository(db)
+	eskulRepository := estrakulikuler.NewRepository(db)
 
 	guruService := guru.NewService(guruRepository)
 	authService := auth.NewService()
@@ -46,12 +48,14 @@ func main() {
 	pesertaDidikService := peserta_didik.NewService(pesertaDidikRepository)
 	kelasService := kelas.NewService(kelasRepository)
 	mengajarService := mengajar.NewService(mengajarRepository)
+	eskulService := estrakulikuler.NewService(eskulRepository)
 
 	guruHandler := handlers.NewGuruHandler(guruService, authService)
 	mataPelajaranHandler := handlers.NewMataPelajaranHandler(mataPelajaranService)
 	pesertaDidikHandler := handlers.NewPesertaDidikHandler(pesertaDidikService)
 	kelasHandler := handlers.NewKelasHandler(kelasService)
 	mengajarHandler := handlers.NewMengajarHandler(mengajarService)
+	eskulHandler := handlers.NewEskulHandler(eskulService)
 
 	router := gin.Default()
 
@@ -91,6 +95,13 @@ func main() {
 	apiHandler.GET("/mengajar/one/:kode_mengajar", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.GetByKodeMengajar)
 	apiHandler.PUT("/mengajar/:kode_mengajar", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.UpdateMengajar)
 	apiHandler.DELETE("/mengajar/:kode_mengajar", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.DeleteByKodeMengajar)
+
+	apiHandler.POST("/eskul/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.Create)
+	apiHandler.GET("/eskul/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.GetAll)
+	apiHandler.GET("/eskul/one/:id_estrakulikuler/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.GetById)
+	apiHandler.GET("/eskul/pebimbing/:nip_guru/", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru", "wali_kelas"}), eskulHandler.GetById)
+	apiHandler.PUT("/eskul/:id_estrakulikuler/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.UpdateById)
+	apiHandler.DELETE("/eskul/:id_estrakulikuler", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.DeleteById)
 
 	router.Run()
 }

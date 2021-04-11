@@ -153,7 +153,7 @@ func (h *kelasHandler) DeleteById(c *gin.Context) {
 	if err != nil {
 		errors := helper.FormatValidationError(err)
 		errorMessage := gin.H{"errors": errors}
-		response := helper.APIResponse("Update kelas failed", http.StatusUnprocessableEntity, "error", errorMessage)
+		response := helper.APIResponse("Delete kelas failed", http.StatusUnprocessableEntity, "error", errorMessage)
 		c.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
