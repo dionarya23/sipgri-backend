@@ -6,7 +6,7 @@ type Repository interface {
 	Save(eskul Estrakulikuler) (Estrakulikuler, error)
 	FindAll() ([]Estrakulikuler, error)
 	FindByID(IDEskul int) (Estrakulikuler, error)
-	FindByNipGuru(NipGuru string) (Estrakulikuler, error)
+	FindByNipPembimbing(NipPembimbing string) (Estrakulikuler, error)
 	Update(updatedData Estrakulikuler) (Estrakulikuler, error)
 	Delete(IDEskul int) error
 }
@@ -20,7 +20,7 @@ func NewRepository(db *gorm.DB) *repository {
 }
 
 func (r *repository) Save(eskul Estrakulikuler) (Estrakulikuler, error) {
-	err := r.db.Omit("Guru").Create(&eskul).Error
+	err := r.db.Omit("Pembimbing").Create(&eskul).Error
 
 	if err != nil {
 		return eskul, err
@@ -32,7 +32,7 @@ func (r *repository) Save(eskul Estrakulikuler) (Estrakulikuler, error) {
 func (r *repository) FindAll() ([]Estrakulikuler, error) {
 	var eskul []Estrakulikuler
 
-	err := r.db.Preload("Guru").Find(&eskul).Error
+	err := r.db.Preload("Pembimbing").Find(&eskul).Error
 
 	if err != nil {
 		return eskul, err
@@ -44,7 +44,7 @@ func (r *repository) FindAll() ([]Estrakulikuler, error) {
 func (r *repository) FindByID(IDEskul int) (Estrakulikuler, error) {
 	var eskul Estrakulikuler
 
-	err := r.db.Preload("Guru").First(&eskul, IDEskul).Error
+	err := r.db.Preload("Pembimbing").First(&eskul, IDEskul).Error
 
 	if err != nil {
 		return eskul, err
@@ -53,10 +53,10 @@ func (r *repository) FindByID(IDEskul int) (Estrakulikuler, error) {
 	return eskul, nil
 }
 
-func (r *repository) FindByNipGuru(NipGuru string) (Estrakulikuler, error) {
+func (r *repository) FindByNipPembimbing(NipPembimbing string) (Estrakulikuler, error) {
 	var eskul Estrakulikuler
 
-	err := r.db.Preload("Guru").First(&eskul, "nip_guru=?", NipGuru).Error
+	err := r.db.Preload("Pembimbing").First(&eskul, "nip_pembimbing=?", NipPembimbing).Error
 
 	if err != nil {
 		return eskul, err
@@ -66,7 +66,7 @@ func (r *repository) FindByNipGuru(NipGuru string) (Estrakulikuler, error) {
 }
 
 func (r *repository) Update(updatedData Estrakulikuler) (Estrakulikuler, error) {
-	err := r.db.Omit("Guru").Save(&updatedData).Error
+	err := r.db.Omit("Pembimbing").Save(&updatedData).Error
 
 	if err != nil {
 		return updatedData, err
@@ -76,6 +76,6 @@ func (r *repository) Update(updatedData Estrakulikuler) (Estrakulikuler, error) 
 }
 
 func (r *repository) Delete(IDEskul int) error {
-	err := r.db.Where("id_eskrakulikuler=?", IDEskul).Delete(&Estrakulikuler{}).Error
+	err := r.db.Where("id_estrakulikuler=?", IDEskul).Delete(&Estrakulikuler{}).Error
 	return err
 }

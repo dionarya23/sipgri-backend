@@ -99,7 +99,7 @@ func main() {
 	apiHandler.POST("/eskul/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.Create)
 	apiHandler.GET("/eskul/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.GetAll)
 	apiHandler.GET("/eskul/one/:id_estrakulikuler/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.GetById)
-	apiHandler.GET("/eskul/pebimbing/:nip_guru/", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru", "wali_kelas"}), eskulHandler.GetById)
+	apiHandler.GET("/eskul/pembimbing/:nip_pembimbing/", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru", "wali_kelas"}), eskulHandler.GetByNipGuru)
 	apiHandler.PUT("/eskul/:id_estrakulikuler/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.UpdateById)
 	apiHandler.DELETE("/eskul/:id_estrakulikuler", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.DeleteById)
 

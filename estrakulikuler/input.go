@@ -1,8 +1,8 @@
 package estrakulikuler
 
 type InputNewEskull struct {
-	Jenis   string `json:"jenis" binding:"required"`
-	NipGuru string `json:"nip_guru" binding:"required"`
+	Jenis         string `json:"jenis" binding:"required"`
+	NipPembimbing string `json:"nip_pembimbing" binding:"required"`
 }
 
 type InputIDEskul struct {
@@ -10,5 +10,5 @@ type InputIDEskul struct {
 }
 
 type InputNipGuru struct {
-	NipGuru string `uri:"nip_guru" binding:"required"`
+	NipPembimbing string `uri:"nip_pembimbing" binding:"required"`
 }

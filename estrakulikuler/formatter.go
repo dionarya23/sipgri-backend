@@ -1,9 +1,11 @@
 package estrakulikuler
 
+import "github.com/dionarya23/sipgri-backend/guru"
+
 type EskulDetailFormatter struct {
 	IDEstrakulikuler int         `json:"id_estrakulikuler"`
 	Jenis            string      `json:"jenis"`
-	NipGuru          string      `json:"nip_guru"`
+	NipPembimbing    string      `json:"nip_pembimbing"`
 	Pembimbing       interface{} `json:"pembimbing"`
 }
 
@@ -11,10 +13,10 @@ func FormatEskulDetail(eskul Estrakulikuler) EskulDetailFormatter {
 	formatter := EskulDetailFormatter{}
 	formatter.IDEstrakulikuler = eskul.IDEstrakulikuler
 	formatter.Jenis = eskul.Jenis
-	formatter.NipGuru = eskul.NipGuru
+	formatter.NipPembimbing = eskul.NipPembimbing
 
 	if eskul.Pembimbing.Nip != "" {
-		formatter.Pembimbing = eskul.Pembimbing
+		formatter.Pembimbing = guru.FormatDetailGuru(eskul.Pembimbing)
 	}
 
 	return formatter

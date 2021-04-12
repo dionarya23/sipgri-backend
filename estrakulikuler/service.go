@@ -1,6 +1,8 @@
 package estrakulikuler
 
-import "errors"
+import (
+	"errors"
+)
 
 type Service interface {
 	Create(inputData InputNewEskull) (Estrakulikuler, error)
@@ -23,7 +25,7 @@ func (s *service) Create(inputData InputNewEskull) (Estrakulikuler, error) {
 	eskul := Estrakulikuler{}
 
 	eskul.Jenis = inputData.Jenis
-	eskul.NipGuru = inputData.NipGuru
+	eskul.NipPembimbing = inputData.NipPembimbing
 
 	newEskul, err := s.repository.Save(eskul)
 
@@ -55,7 +57,7 @@ func (s *service) GetByID(inputIDEskul InputIDEskul) (Estrakulikuler, error) {
 }
 
 func (s *service) GetByNipGuru(inputNipGuru InputNipGuru) (Estrakulikuler, error) {
-	eskul, err := s.repository.FindByNipGuru(inputNipGuru.NipGuru)
+	eskul, err := s.repository.FindByNipPembimbing(inputNipGuru.NipPembimbing)
 
 	if err != nil {
 		return eskul, err
@@ -75,7 +77,7 @@ func (s *service) Update(inputIDEskul InputIDEskul, inputData InputNewEskull) (E
 	}
 
 	eskul.Jenis = inputData.Jenis
-	eskul.NipGuru = inputData.NipGuru
+	eskul.NipPembimbing = inputData.NipPembimbing
 
 	updatedEskul, err := s.repository.Update(eskul)
 

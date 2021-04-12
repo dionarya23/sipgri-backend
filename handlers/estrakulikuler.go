@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/dionarya23/sipgri-backend/estrakulikuler"
@@ -92,6 +93,8 @@ func (h *eskulHandler) GetByNipGuru(c *gin.Context) {
 
 	eskul, err := h.eskulService.GetByNipGuru(input)
 	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Error disini")
 		response := helper.APIResponse("Get list estrakulikuler failed", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
@@ -104,7 +107,7 @@ func (h *eskulHandler) GetByNipGuru(c *gin.Context) {
 	}
 
 	formatter := estrakulikuler.FormatEskulDetail(eskul)
-	response := helper.APIResponse("estrakulikuler get kelas", http.StatusOK, "success", formatter)
+	response := helper.APIResponse("success get estrakulikuler", http.StatusOK, "success", formatter)
 	c.JSON(http.StatusOK, response)
 }
 
