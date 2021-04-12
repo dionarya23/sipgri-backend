@@ -1,5 +1,6 @@
 module github.com/dionarya23/sipgri-backend
 
+// +heroku goVersion go1.15
 go 1.15
 
 require (

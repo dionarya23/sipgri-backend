@@ -33,6 +33,7 @@ func AuthMiddleware(authService auth.Service, guruService guru.Service, typePega
 		if err != nil {
 			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
 		}
 
 		claim, ok := token.Claims.(jwt.MapClaims)
