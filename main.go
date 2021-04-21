@@ -8,6 +8,7 @@ import (
 	"github.com/dionarya23/sipgri-backend/estrakulikuler"
 	"github.com/dionarya23/sipgri-backend/guru"
 	"github.com/dionarya23/sipgri-backend/handlers"
+	"github.com/dionarya23/sipgri-backend/jadwal"
 	"github.com/dionarya23/sipgri-backend/kelas"
 	"github.com/dionarya23/sipgri-backend/mata_pelajaran"
 	"github.com/dionarya23/sipgri-backend/mengajar"
@@ -42,6 +43,7 @@ func main() {
 	kelasRepository := kelas.NewRepository(db)
 	mengajarRepository := mengajar.NewRepository(db)
 	eskulRepository := estrakulikuler.NewRepository(db)
+	jadwalRepository := jadwal.NewRepository(db)
 
 	guruService := guru.NewService(guruRepository)
 	authService := auth.NewService()
@@ -50,6 +52,7 @@ func main() {
 	kelasService := kelas.NewService(kelasRepository)
 	mengajarService := mengajar.NewService(mengajarRepository)
 	eskulService := estrakulikuler.NewService(eskulRepository)
+	jadwalService := jadwal.NewService(jadwalRepository)
 
 	guruHandler := handlers.NewGuruHandler(guruService, authService)
 	mataPelajaranHandler := handlers.NewMataPelajaranHandler(mataPelajaranService)
@@ -57,6 +60,7 @@ func main() {
 	kelasHandler := handlers.NewKelasHandler(kelasService)
 	mengajarHandler := handlers.NewMengajarHandler(mengajarService)
 	eskulHandler := handlers.NewEskulHandler(eskulService)
+	jadwalHandler := handlers.NewJadwalHandler(jadwalService)
 
 	router := gin.Default()
 	router.Use(cors.Default())
@@ -104,6 +108,12 @@ func main() {
 	apiHandler.GET("/eskul/pembimbing/:nip_pembimbing/", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru", "wali_kelas"}), eskulHandler.GetByNipGuru)
 	apiHandler.PUT("/eskul/:id_estrakulikuler/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.UpdateById)
 	apiHandler.DELETE("/eskul/:id_estrakulikuler", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.DeleteById)
+
+	apiHandler.POST("/jadwal/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.CreateNewData)
+	apiHandler.GET("/jadwal/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.FindAllJadwal)
+	apiHandler.GET("/jadwal/one/:id_jadwal", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.FindOneByIdJadwal)
+	apiHandler.PUT("/jadwal/:id_jadwal", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.UpdateById)
+	apiHandler.DELETE("/jadwal/:id_jadwal", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.DeleteById)
 
 	router.Run()
 }
