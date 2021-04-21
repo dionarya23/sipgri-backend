@@ -13,6 +13,7 @@ import (
 	"github.com/dionarya23/sipgri-backend/mengajar"
 	"github.com/dionarya23/sipgri-backend/middleware"
 	"github.com/dionarya23/sipgri-backend/peserta_didik"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
@@ -58,6 +59,7 @@ func main() {
 	eskulHandler := handlers.NewEskulHandler(eskulService)
 
 	router := gin.Default()
+	router.Use(cors.Default())
 
 	apiHandler := router.Group("/api")
 
