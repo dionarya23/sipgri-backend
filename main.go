@@ -63,7 +63,13 @@ func main() {
 	jadwalHandler := handlers.NewJadwalHandler(jadwalService)
 
 	router := gin.Default()
-	router.Use(cors.Default())
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"*"}
+	config.AllowCredentials = true
+	config.AllowHeaders = []string{"Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With"}
+	config.AllowMethods = []string{"POST, OPTIONS, GET, PUT, DELETE"}
+	router.Use(cors.New(config))
+
 	apiHandler := router.Group("/api")
 
 	apiHandler.POST("/guru/register", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), guruHandler.RegisterGuru)
