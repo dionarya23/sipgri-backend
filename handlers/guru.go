@@ -54,15 +54,15 @@ func (h *guruHandler) Login(c *gin.Context) {
 	}
 
 	guru_, err := h.guruService.Login(input)
-	if err != nil {
-		response := helper.APIResponse("Login failed", http.StatusBadRequest, "error", nil)
-		c.JSON(http.StatusBadRequest, response)
-		return
-	}
-
 	if guru_.Nip == "" {
 		response := helper.APIResponse("Email Not found", http.StatusNotFound, "error", nil)
 		c.JSON(http.StatusNotFound, response)
+		return
+	}
+
+	if err != nil {
+		response := helper.APIResponse("Login failed", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
