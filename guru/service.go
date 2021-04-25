@@ -61,7 +61,7 @@ func (s *service) Login(input LoginGuruInput) (Guru, error) {
 
 	err_ := bcrypt.CompareHashAndPassword([]byte(guru.Password), []byte(password))
 
-	if err != nil {
+	if err_ != nil {
 		return guru, err_
 	}
 

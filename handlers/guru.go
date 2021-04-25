@@ -56,7 +56,7 @@ func (h *guruHandler) Login(c *gin.Context) {
 	guru_, err := h.guruService.Login(input)
 	if err != nil {
 		response := helper.APIResponse("Login failed", http.StatusBadRequest, "error", nil)
-		c.JSON(http.StatusNotFound, response)
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
