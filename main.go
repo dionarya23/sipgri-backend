@@ -63,12 +63,7 @@ func main() {
 	jadwalHandler := handlers.NewJadwalHandler(jadwalService)
 
 	router := gin.Default()
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"*"}
-	config.AllowCredentials = true
-	config.AllowHeaders = []string{"Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With"}
-	config.AllowMethods = []string{"POST, OPTIONS, GET, PUT, DELETE"}
-	router.Use(cors.New(config))
+	router.Use(cors.Default())
 
 	apiHandler := router.Group("/api")
 
