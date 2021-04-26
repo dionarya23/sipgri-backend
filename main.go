@@ -14,6 +14,7 @@ import (
 	"github.com/dionarya23/sipgri-backend/mengajar"
 	"github.com/dionarya23/sipgri-backend/middleware"
 	"github.com/dionarya23/sipgri-backend/peserta_didik"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
@@ -62,57 +63,65 @@ func main() {
 	jadwalHandler := handlers.NewJadwalHandler(jadwalService)
 
 	router := gin.Default()
-	// router.Use(cors.Default())
+	router.Use(cors.New(cors.Config{
+		AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "User-Agent", "Referrer", "Host", "Token"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowAllOrigins:  false,
+		AllowOriginFunc:  func(origin string) bool { return true },
+		MaxAge:           86400,
+	}))
 
 	apiHandler := router.Group("/api")
 
-	apiHandler.POST("/guru/register", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), guruHandler.RegisterGuru)
-	apiHandler.POST("/guru/login", middleware.Cors(), guruHandler.Login)
-	apiHandler.GET("/guru/", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), guruHandler.GetAllGuru)
-	apiHandler.GET("/guru/:nip", middleware.Cors(), middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.GetOneGuru)
-	apiHandler.PUT("/guru/:nip", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.UpdateGuru)
-	apiHandler.DELETE("/guru/:nip", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), guruHandler.DeleteGuru)
-	apiHandler.POST("/guru/check-nip", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.IsNipExist)
-	apiHandler.POST("/guru/check-email", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.IsEmailExist)
+	apiHandler.POST("/guru/register", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), guruHandler.RegisterGuru)
+	apiHandler.POST("/guru/login", guruHandler.Login)
+	apiHandler.GET("/guru/", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), guruHandler.GetAllGuru)
+	apiHandler.GET("/guru/:nip", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.GetOneGuru)
+	apiHandler.PUT("/guru/:nip", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.UpdateGuru)
+	apiHandler.DELETE("/guru/:nip", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), guruHandler.DeleteGuru)
+	apiHandler.POST("/guru/check-nip", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.IsNipExist)
+	apiHandler.POST("/guru/check-email", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), guruHandler.IsEmailExist)
 
-	apiHandler.POST("/mata-pelajaran", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.CreateNewMataPelajaran)
-	apiHandler.GET("/mata-pelajaran", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.GetAll)
-	apiHandler.GET("/mata-pelajaran/:id_mata_pelajaran", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.GetOne)
-	apiHandler.PUT("/mata-pelajaran/:id_mata_pelajaran", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.UpdatedMataPelajaran)
-	apiHandler.DELETE("/mata-pelajaran/:id_mata_pelajaran", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.DeleteByIDMataPelajaran)
+	apiHandler.POST("/mata-pelajaran", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.CreateNewMataPelajaran)
+	apiHandler.GET("/mata-pelajaran", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.GetAll)
+	apiHandler.GET("/mata-pelajaran/:id_mata_pelajaran", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.GetOne)
+	apiHandler.PUT("/mata-pelajaran/:id_mata_pelajaran", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.UpdatedMataPelajaran)
+	apiHandler.DELETE("/mata-pelajaran/:id_mata_pelajaran", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mataPelajaranHandler.DeleteByIDMataPelajaran)
 
-	apiHandler.POST("/peserta-didik", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), pesertaDidikHandler.CreatePesertaDidik)
-	apiHandler.GET("/peserta-didik", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), pesertaDidikHandler.GetAllPesertaDidik)
-	apiHandler.GET("/peserta-didik/one", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), pesertaDidikHandler.GetOnePesertaDidik)
-	apiHandler.PUT("/peserta-didik/:nisn", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), pesertaDidikHandler.UpdatePesertaDidik)
-	apiHandler.DELETE("/peserta-didik/:nisn", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), pesertaDidikHandler.DeleteByNisn)
-	apiHandler.GET("/peserta-didik/wali-kelas/:nip_wali", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin", "wali_kelas"}), kelasHandler.GetByNipWali)
+	apiHandler.POST("/peserta-didik", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), pesertaDidikHandler.CreatePesertaDidik)
+	apiHandler.GET("/peserta-didik", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), pesertaDidikHandler.GetAllPesertaDidik)
+	apiHandler.GET("/peserta-didik/one", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru"}), pesertaDidikHandler.GetOnePesertaDidik)
+	apiHandler.PUT("/peserta-didik/:nisn", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), pesertaDidikHandler.UpdatePesertaDidik)
+	apiHandler.DELETE("/peserta-didik/:nisn", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), pesertaDidikHandler.DeleteByNisn)
+	apiHandler.GET("/peserta-didik/wali-kelas/:nip_wali", middleware.AuthMiddleware(authService, guruService, []string{"admin", "wali_kelas"}), kelasHandler.GetByNipWali)
 
-	apiHandler.POST("/kelas", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.CreateKelas)
-	apiHandler.GET("/kelas", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.GetAll)
-	apiHandler.GET("/kelas/:id_kelas", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.GetById)
-	apiHandler.PUT("/kelas/:id_kelas", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.UpdateById)
-	apiHandler.DELETE("/kelas/:id_kelas", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.DeleteById)
+	apiHandler.POST("/kelas", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.CreateKelas)
+	apiHandler.GET("/kelas", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.GetAll)
+	apiHandler.GET("/kelas/:id_kelas", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.GetById)
+	apiHandler.PUT("/kelas/:id_kelas", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.UpdateById)
+	apiHandler.DELETE("/kelas/:id_kelas", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), kelasHandler.DeleteById)
 
-	apiHandler.GET("/mengajar/guru/:nip_guru", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru", "wali_kelas"}), mengajarHandler.GetByNipGuru)
-	apiHandler.POST("/mengajar", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.Create)
-	apiHandler.GET("/mengajar", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.GetAll)
-	apiHandler.GET("/mengajar/one/:kode_mengajar", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.GetByKodeMengajar)
-	apiHandler.PUT("/mengajar/:kode_mengajar", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.UpdateMengajar)
-	apiHandler.DELETE("/mengajar/:kode_mengajar", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.DeleteByKodeMengajar)
+	apiHandler.GET("/mengajar/guru/:nip_guru", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru", "wali_kelas"}), mengajarHandler.GetByNipGuru)
+	apiHandler.POST("/mengajar", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.Create)
+	apiHandler.GET("/mengajar", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.GetAll)
+	apiHandler.GET("/mengajar/one/:kode_mengajar", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.GetByKodeMengajar)
+	apiHandler.PUT("/mengajar/:kode_mengajar", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.UpdateMengajar)
+	apiHandler.DELETE("/mengajar/:kode_mengajar", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), mengajarHandler.DeleteByKodeMengajar)
 
-	apiHandler.POST("/eskul", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.Create)
-	apiHandler.GET("/eskul", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.GetAll)
-	apiHandler.GET("/eskul/one/:id_estrakulikuler", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.GetById)
-	apiHandler.GET("/eskul/pembimbing/:nip_pembimbing", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru", "wali_kelas"}), eskulHandler.GetByNipGuru)
-	apiHandler.PUT("/eskul/:id_estrakulikuler", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.UpdateById)
-	apiHandler.DELETE("/eskul/:id_estrakulikuler", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.DeleteById)
+	apiHandler.POST("/eskul", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.Create)
+	apiHandler.GET("/eskul", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.GetAll)
+	apiHandler.GET("/eskul/one/:id_estrakulikuler", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.GetById)
+	apiHandler.GET("/eskul/pembimbing/:nip_pembimbing", middleware.AuthMiddleware(authService, guruService, []string{"admin", "guru", "wali_kelas"}), eskulHandler.GetByNipGuru)
+	apiHandler.PUT("/eskul/:id_estrakulikuler", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.UpdateById)
+	apiHandler.DELETE("/eskul/:id_estrakulikuler", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), eskulHandler.DeleteById)
 
-	apiHandler.POST("/jadwal", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.CreateNewData)
-	apiHandler.GET("/jadwal", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.FindAllJadwal)
-	apiHandler.GET("/jadwal/one/:id_jadwal", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.FindOneByIdJadwal)
-	apiHandler.PUT("/jadwal/:id_jadwal", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.UpdateById)
-	apiHandler.DELETE("/jadwal/:id_jadwal", middleware.Cors(), middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.DeleteById)
+	apiHandler.POST("/jadwal", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.CreateNewData)
+	apiHandler.GET("/jadwal", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.FindAllJadwal)
+	apiHandler.GET("/jadwal/one/:id_jadwal", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.FindOneByIdJadwal)
+	apiHandler.PUT("/jadwal/:id_jadwal", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.UpdateById)
+	apiHandler.DELETE("/jadwal/:id_jadwal", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.DeleteById)
 
 	router.Run()
 }
