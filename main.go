@@ -14,7 +14,6 @@ import (
 	"github.com/dionarya23/sipgri-backend/mengajar"
 	"github.com/dionarya23/sipgri-backend/middleware"
 	"github.com/dionarya23/sipgri-backend/peserta_didik"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
@@ -63,15 +62,7 @@ func main() {
 	jadwalHandler := handlers.NewJadwalHandler(jadwalService)
 
 	router := gin.Default()
-	router.Use(cors.New(cors.Config{
-		AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "User-Agent", "Referrer", "Host", "Token", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		AllowAllOrigins:  false,
-		AllowOriginFunc:  func(origin string) bool { return true },
-		MaxAge:           86400,
-	}))
+	router.Use(CORSMiddleware())
 
 	apiHandler := router.Group("/api")
 
@@ -124,4 +115,21 @@ func main() {
 	apiHandler.DELETE("/jadwal/:id_jadwal", middleware.AuthMiddleware(authService, guruService, []string{"admin"}), jadwalHandler.DeleteById)
 
 	router.Run()
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Credentials", "true")
+		c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Header("Access-Control-Allow-Methods", "POST,HEAD,PATCH, OPTIONS, GET, PUT")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
 }
